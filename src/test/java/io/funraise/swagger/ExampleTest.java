@@ -2,8 +2,10 @@ package io.funraise.swagger;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.funraise.swagger.play.RouteFactory;
 import io.swagger.models.Info;
 import org.junit.BeforeClass;
@@ -20,11 +22,16 @@ public class ExampleTest {
 
     private static List<String> routesFile;
     private static String expectedJson;
+    private static JsonMapper mapper;
 
     @BeforeClass
     public static void before() {
        routesFile = routesFile();
        expectedJson = expectedJson();
+       mapper = JsonMapper.builder()
+           .serializationInclusion(JsonInclude.Include.NON_NULL)
+           .enable(SerializationFeature.INDENT_OUTPUT)
+           .build();
     }
 
     @Test
@@ -45,15 +52,12 @@ public class ExampleTest {
             null
         );
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
-        var result = objectMapper.writeValueAsString(swagger);
+        var json = mapper.valueToTree(swagger);
+        var expected = mapper.reader().readTree(expectedJson);
 
         assertEquals(
-            expectedJson,
-            result
+            expected,
+            json
         );
     }
 
