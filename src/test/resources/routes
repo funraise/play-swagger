@@ -1,0 +1,2 @@
+POST    /example/:id    com.example.controller.ExampleController.create(id: java.lang.Long)
+GET    /example/:id    com.example.controller.ExampleController.get(id: java.lang.Long)
