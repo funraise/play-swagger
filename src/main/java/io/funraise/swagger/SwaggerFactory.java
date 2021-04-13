@@ -271,6 +271,13 @@ public class SwaggerFactory {
         return response;
     }
 
+    public Response response(Class<?> responseType, String description) {
+        Response response = new Response();
+        response.setDescription(description);
+        response.setResponseSchema(this.model(responseType));
+        return response;
+    }
+
     private Model model(Class<?> clazz) {
         var model = converter.resolve(clazz);
         if (model instanceof ModelImpl) {

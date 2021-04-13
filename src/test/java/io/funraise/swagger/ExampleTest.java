@@ -52,8 +52,8 @@ public class ExampleTest {
         var result = objectMapper.writeValueAsString(swagger);
 
         assertEquals(
-            result,
-            expectedJson
+            expectedJson,
+            result
         );
     }
 
