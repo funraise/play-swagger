@@ -9,16 +9,26 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ClassUtils;
 
 public class Reflector {
+    private final ClassLoader classLoader;
+
+    public Reflector() {
+        classLoader = Reflector.class.getClassLoader();
+    }
+
+    public Reflector(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     public ControllerMethod reflect(Controller controller) {
         try {
-            Class<?> controllerClass = Class.forName(controller.className().fullName());
+            Class<?> controllerClass = Class.forName(controller.className().fullName(), false, classLoader);
             var comparator = new ParameterTypeComparator();
             var params = controller
                 .method()
                 .parameters();
             var paramTypes = params
                 .stream()
-                .map(parameter -> guessType(parameter.type()))
+                .map(parameter -> guessType(classLoader, parameter.type()))
                 .toArray(Class<?>[]::new);
 
             var method = Arrays
@@ -37,7 +47,7 @@ public class Reflector {
         }
     }
 
-    private static Class<?> guessType(String type) {
+    private static Class<?> guessType(ClassLoader classLoader, String type) {
         try {
             switch (type) {
                 case "Request":
@@ -51,10 +61,10 @@ public class Reflector {
                     break;
             }
             // ClassUtils to handle for inner-class
-            return ClassUtils.getClass(type);
+            return ClassUtils.getClass(classLoader, type, false);
         } catch (ClassNotFoundException e1) {
             try {
-                return Class.forName("java.lang."+type);
+                return Class.forName("java.lang."+type, false, classLoader);
             } catch (ClassNotFoundException e2) {
                 throw new RuntimeException("Type: "+type, e1);
             }

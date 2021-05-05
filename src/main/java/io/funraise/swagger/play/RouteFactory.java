@@ -15,6 +15,12 @@ public class RouteFactory {
     private final Parser parser;
     private final Reflector reflector;
 
+    public RouteFactory(Reflector reflector) {
+        lexer = new Lexer();
+        parser = new Parser();
+        this.reflector = reflector;
+    }
+
     public RouteFactory() {
         lexer = new Lexer();
         parser = new Parser();
