@@ -6,6 +6,7 @@ import com.example.dto.ExampleResponse;
 import io.swagger.annotations.*;
 
 import java.net.http.HttpResponse;
+import java.util.UUID;
 
 @Api(tags = {"Example"})
 public class ExampleController {
@@ -28,6 +29,15 @@ public class ExampleController {
     })
     @ApiOperation(value = "GetExample", nickname = "GetExample")
     public HttpResponse<Void> get(Long id) {
+        return null;
+    }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successfully found", response = ExampleResponse.class),
+        @ApiResponse(code = 404, message = "Not Found", response = ExampleError.class)
+    })
+    @ApiOperation(value = "GetNestedExample", nickname = "GetNestedExample")
+    public HttpResponse<Void> getNested(Long id, UUID otherId) {
         return null;
     }
 }

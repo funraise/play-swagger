@@ -81,6 +81,45 @@
           }
         }
       }
+    },
+    "/example/{id}/test/{otherId}" : {
+      "get" : {
+        "tags" : [ "Example" ],
+        "operationId" : "GetNestedExample",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true
+        }, {
+          "name" : "otherId",
+          "in" : "path",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully found",
+            "schema" : {
+              "originalRef" : "#/definitions/ExampleResponse",
+              "$ref" : "#/definitions/ExampleResponse"
+            },
+            "responseSchema" : {
+              "originalRef" : "ExampleResponse",
+              "$ref" : "#/definitions/ExampleResponse"
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "schema" : {
+              "originalRef" : "#/definitions/ExampleError",
+              "$ref" : "#/definitions/ExampleError"
+            },
+            "responseSchema" : {
+              "originalRef" : "ExampleError",
+              "$ref" : "#/definitions/ExampleError"
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {

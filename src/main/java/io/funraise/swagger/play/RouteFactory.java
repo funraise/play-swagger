@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class RouteFactory {
 
-    private static final Pattern PATH_PATTERN = Pattern.compile("([:*$])(\\p{javaJavaIdentifierPart}*)(?:<(.*)>)?");
+    private static final Pattern PATH_PATTERN = Pattern.compile("([:*$])(\\p{javaJavaIdentifierPart}*)(?:<([^>]*)>)?");
 
     private final Lexer lexer;
     private final Parser parser;
