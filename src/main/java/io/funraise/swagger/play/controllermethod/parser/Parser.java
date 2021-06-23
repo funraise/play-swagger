@@ -16,7 +16,8 @@ public class Parser {
     <class-name> ::= <label> | <label> "[" <class-name> "]" | <label> "." <class-name>
     <method> ::= <label> "(" <parameter-list> ")"
     <parameter-list> ::= <parameter> | <parameter> "," <parameter-list>
-    <parameter> ::= <label> | <label> ":" <class-name> | <label> ":" <class-name> <assignment> <value>
+    <parameter-name> ::= "`" <label> "`" | <label>
+    <parameter> ::= <parameter-name> | <parameter-name> ":" <class-name> | <parameter-name> ":" <class-name> <assignment> <value>
     <assignment> ::= "=" | "?="
     <value> ::= "NULL_VALUE" | "STRING_VALUE" | "BOOLEAN_VALUE"
      */
@@ -95,8 +96,7 @@ public class Parser {
     }
 
     private Parameter parameter(ListIterator<Token> iterator) {
-        consumeWhitespace(iterator);
-        var parameterNameToken = expect(iterator, TokenType.LABEL);
+        var parameterNameToken = parameterName(iterator);
         consumeWhitespace(iterator);
         var token = iterator.next();
 
@@ -117,6 +117,17 @@ public class Parser {
         }
 
         return new Parameter(parameterNameToken.value(), parameterType);
+    }
+
+    private Token parameterName(ListIterator<Token> iterator) {
+        consumeWhitespace(iterator);
+        var token = iterator.next();
+        if (token.type().equals(TokenType.BACKTICK)) {
+            var parameterNameToken = expect(iterator, TokenType.LABEL);
+            iterator.next();
+            return parameterNameToken;
+        }
+        return token;
     }
 
     private void consumeWhitespace(ListIterator<Token> iterator) {

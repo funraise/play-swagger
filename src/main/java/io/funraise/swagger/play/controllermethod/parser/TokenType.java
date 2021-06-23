@@ -12,6 +12,7 @@ public enum TokenType {
     LABEL(compile("\\p{javaJavaIdentifierPart}+")),
     WHITESPACE(compile(" ")),
     COMMA(compile(",")),
+    BACKTICK(compile("`")),
     PACKAGE_SEPARATOR(compile("\\.")),
     OPEN_PARENS(compile("\\(")),
     CLOSE_PARENS(compile("\\)")),
