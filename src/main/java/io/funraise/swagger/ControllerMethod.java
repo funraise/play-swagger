@@ -5,10 +5,49 @@ import java.util.List;
 import java.util.Objects;
 
 public final class ControllerMethod {
-    private final Method method;
-    private final List<String> parameters;
+    public final static class Parameter {
+        private final String name;
+        private final Class<?> type;
 
-    public ControllerMethod(Method method, List<String> parameters) {
+        public Parameter(String name, Class<?> type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        public String name() {
+            return name;
+        }
+
+        public Class<?> type() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Parameter parameter = (Parameter) o;
+            return Objects.equals(name, parameter.name) && Objects.equals(type, parameter.type);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, type);
+        }
+
+        @Override
+        public String toString() {
+            return "Parameter{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                '}';
+        }
+    }
+
+    private final Method method;
+    private final List<Parameter> parameters;
+
+    public ControllerMethod(Method method, List<Parameter> parameters) {
         this.method = method;
         this.parameters = parameters;
     }
@@ -17,7 +56,7 @@ public final class ControllerMethod {
         return method;
     }
 
-    public List<String> parameters() {
+    public List<Parameter> parameters() {
         return parameters;
     }
 

@@ -40,4 +40,16 @@ public class ExampleController {
     public HttpResponse<Void> getNested(Long id, UUID otherId) {
         return null;
     }
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successfully found", response = ExampleResponse[].class),
+        @ApiResponse(code = 404, message = "Not Found", response = ExampleError.class)
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(paramType = "body", required = true, dataTypeClass = ExampleRequest[].class)
+    })
+    @ApiOperation("put")
+    public HttpResponse<Void> put() {
+        return null;
+    }
 }

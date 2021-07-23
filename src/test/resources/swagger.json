@@ -1,165 +1,248 @@
 {
-  "swagger" : "2.0",
-  "info" : {
-    "version" : "2.0",
-    "title" : "Example"
+  "swagger": "2.0",
+  "info": {
+    "version": "2.0",
+    "title": "Example"
   },
-  "paths" : {
-    "/example/{id}" : {
-      "get" : {
-        "tags" : [ "Example" ],
-        "operationId" : "GetExample",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Successfully found",
-            "schema" : {
-              "originalRef" : "#/definitions/ExampleResponse",
-              "$ref" : "#/definitions/ExampleResponse"
+  "paths": {
+    "/example/{id}": {
+      "get": {
+        "tags": [
+          "Example"
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "GetExample",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
             },
-            "responseSchema" : {
-              "originalRef" : "ExampleResponse",
-              "$ref" : "#/definitions/ExampleResponse"
+            "responseSchema": {
+              "originalRef": "ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
             }
           },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "originalRef" : "#/definitions/ExampleError",
-              "$ref" : "#/definitions/ExampleError"
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleError",
+              "$ref": "#/definitions/ExampleError"
             },
-            "responseSchema" : {
-              "originalRef" : "ExampleError",
-              "$ref" : "#/definitions/ExampleError"
+            "responseSchema": {
+              "originalRef": "ExampleError",
+              "$ref": "#/definitions/ExampleError"
             }
           }
         }
       },
-      "post" : {
-        "tags" : [ "Example" ],
-        "operationId" : "CreateExample",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "",
-          "description" : "",
-          "required" : true,
-          "schema" : {
-            "originalRef" : "ExampleRequest",
-            "$ref" : "#/definitions/ExampleRequest"
-          }
-        }, {
-          "name" : "id",
-          "in" : "path",
-          "required" : true
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Successfully created",
-            "schema" : {
-              "originalRef" : "#/definitions/ExampleResponse",
-              "$ref" : "#/definitions/ExampleResponse"
-            },
-            "responseSchema" : {
-              "originalRef" : "ExampleResponse",
-              "$ref" : "#/definitions/ExampleResponse"
+      "post": {
+        "tags": [
+          "Example"
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "CreateExample",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "originalRef": "ExampleRequest",
+              "$ref": "#/definitions/ExampleRequest"
             }
           },
-          "400" : {
-            "description" : "Something went wrong with creation",
-            "schema" : {
-              "originalRef" : "#/definitions/ExampleError",
-              "$ref" : "#/definitions/ExampleError"
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created",
+            "schema": {
+              "originalRef": "#/definitions/ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
             },
-            "responseSchema" : {
-              "originalRef" : "ExampleError",
-              "$ref" : "#/definitions/ExampleError"
+            "responseSchema": {
+              "originalRef": "ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
+            }
+          },
+          "400": {
+            "description": "Something went wrong with creation",
+            "schema": {
+              "originalRef": "#/definitions/ExampleError",
+              "$ref": "#/definitions/ExampleError"
+            },
+            "responseSchema": {
+              "originalRef": "ExampleError",
+              "$ref": "#/definitions/ExampleError"
             }
           }
         }
       }
     },
-    "/example/{id}/test/{otherId}" : {
-      "get" : {
-        "tags" : [ "Example" ],
-        "operationId" : "GetNestedExample",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true
-        }, {
-          "name" : "otherId",
-          "in" : "path",
-          "required" : true
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Successfully found",
-            "schema" : {
-              "originalRef" : "#/definitions/ExampleResponse",
-              "$ref" : "#/definitions/ExampleResponse"
+    "/example": {
+      "put": {
+        "tags": [
+          "Example"
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "put",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "originalRef": "ExampleRequest",
+                "$ref": "#/definitions/ExampleRequest"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found",
+            "schema": {
+              "type": "array",
+              "items": {
+                "originalRef": "ExampleResponse",
+                "$ref": "#/definitions/ExampleResponse"
+              }
             },
-            "responseSchema" : {
-              "originalRef" : "ExampleResponse",
-              "$ref" : "#/definitions/ExampleResponse"
+            "responseSchema": {
+              "type": "array",
+              "items": {
+                "originalRef": "ExampleResponse",
+                "$ref": "#/definitions/ExampleResponse"
+              }
             }
           },
-          "404" : {
-            "description" : "Not Found",
-            "schema" : {
-              "originalRef" : "#/definitions/ExampleError",
-              "$ref" : "#/definitions/ExampleError"
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleError",
+              "$ref": "#/definitions/ExampleError"
             },
-            "responseSchema" : {
-              "originalRef" : "ExampleError",
-              "$ref" : "#/definitions/ExampleError"
+            "responseSchema": {
+              "originalRef": "ExampleError",
+              "$ref": "#/definitions/ExampleError"
+            }
+          }
+        }
+      }
+    },
+    "/example/{id}/test/{otherId}": {
+      "get": {
+        "tags": [
+          "Example"
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "GetNestedExample",
+        "parameters": [
+          {
+            "name": "otherId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
+            },
+            "responseSchema": {
+              "originalRef": "ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleError",
+              "$ref": "#/definitions/ExampleError"
+            },
+            "responseSchema": {
+              "originalRef": "ExampleError",
+              "$ref": "#/definitions/ExampleError"
             }
           }
         }
       }
     }
   },
-  "definitions" : {
-    "ExampleError" : {
-      "type" : "object",
-      "properties" : {
-        "code" : {
-          "type" : "integer",
-          "format" : "int32"
+  "definitions": {
+    "ExampleError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
         },
-        "message" : {
-          "type" : "string"
+        "message": {
+          "type": "string"
         }
       }
     },
-    "ExampleRequest" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
+    "ExampleRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
         },
-        "amount" : {
-          "type" : "integer",
-          "format" : "int32"
+        "amount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
-    "ExampleResponse" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "integer",
-          "format" : "int64"
+    "ExampleResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
         },
-        "name" : {
-          "type" : "string"
+        "name": {
+          "type": "string"
         },
-        "amount" : {
-          "type" : "integer",
-          "format" : "int32"
+        "amount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     }

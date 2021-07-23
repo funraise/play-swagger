@@ -38,12 +38,25 @@ public class Reflector {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Could not find method: "+ controller));
 
-            var parameters = params.stream().map(Parameter::name).collect(Collectors.toList());
+            var parameters = params
+                .stream()
+                .map(parameter -> new ControllerMethod.Parameter(parameter.name(),
+                    guessType(classLoader, parameter.type(), String.class)))
+                .collect(Collectors.toList());
 
             return new ControllerMethod(method, parameters);
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static Class<?> guessType(ClassLoader classLoader, String type, Class<?> defaultType) {
+        var result = guessType(classLoader, type);
+        if (result == null) {
+            return defaultType;
+        } else {
+            return result;
         }
     }
 
