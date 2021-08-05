@@ -6,7 +6,7 @@
 
     <groupId>io.funraise</groupId>
     <artifactId>play-swagger</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
 
     <build>
         <plugins>

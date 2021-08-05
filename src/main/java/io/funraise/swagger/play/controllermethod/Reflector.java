@@ -2,10 +2,11 @@ package io.funraise.swagger.play.controllermethod;
 
 import io.funraise.swagger.ControllerMethod;
 import io.funraise.swagger.play.controllermethod.parser.ast.Controller;
-import io.funraise.swagger.play.controllermethod.parser.ast.Parameter;
 import io.funraise.swagger.util.ParameterTypeComparator;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.commons.lang3.ClassUtils;
 
 public class Reflector {
@@ -38,10 +39,16 @@ public class Reflector {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Could not find method: "+ controller));
 
-            var parameters = params
-                .stream()
-                .map(parameter -> new ControllerMethod.Parameter(parameter.name(),
-                    guessType(classLoader, parameter.type(), String.class)))
+            var parameters = IntStream
+                .range(0, params.size())
+                .mapToObj(i -> {
+                    var parameter = params.get(i);
+                    return new ControllerMethod.Parameter(
+                        parameter.name(),
+                        List.of(method.getParameterAnnotations()[i]),
+                        guessType(classLoader, parameter.type(), String.class)
+                    );
+                })
                 .collect(Collectors.toList());
 
             return new ControllerMethod(method, parameters);

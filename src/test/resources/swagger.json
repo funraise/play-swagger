@@ -100,6 +100,74 @@
       }
     },
     "/example": {
+      "get": {
+        "tags": [
+          "Example"
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "GetPaginatedExample",
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "allowEmptyValue": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "allowEmptyValue": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
+            },
+            "responseSchema": {
+              "originalRef": "ExampleResponse",
+              "$ref": "#/definitions/ExampleResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "originalRef": "#/definitions/ExampleError",
+              "$ref": "#/definitions/ExampleError"
+            },
+            "responseSchema": {
+              "originalRef": "ExampleError",
+              "$ref": "#/definitions/ExampleError"
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
           "Example"

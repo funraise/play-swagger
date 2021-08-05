@@ -5,6 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.converter.ModelConverterContextImpl;
@@ -19,6 +20,7 @@ import io.swagger.models.Response;
 import io.swagger.models.SecurityRequirement;
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.SecuritySchemeDefinition;
+import io.swagger.models.parameters.AbstractSerializableParameter;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.FormParameter;
 import io.swagger.models.parameters.HeaderParameter;
@@ -36,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -149,17 +152,17 @@ public class SwaggerFactory {
         var pathParams = controllerMethod
             .parameters()
             .stream()
-            .filter(parameter -> !parameter.name().equals("request"))
+            .filter(this::shouldInclude)
             .filter(parameter -> path.contains("{"+parameter.name()+"}"))
             .map(this::pathParameter)
-            .collect(Collectors.toMap(Parameter::getName, Function.identity()));
+            .collect(Collectors.toMap(Parameter::getName, Function.identity(), (a, b) -> b));
 
         var queryParams = controllerMethod.parameters()
             .stream()
-            .filter(parameter -> !parameter.name().equals("request"))
+            .filter(this::shouldInclude)
             .filter(parameter -> !path.contains("{"+parameter.name()+"}"))
             .map(this::queryParameter)
-            .collect(Collectors.toMap(Parameter::getName, Function.identity()));
+            .collect(Collectors.toMap(Parameter::getName, Function.identity(), (a, b) -> b));
 
         parameters.putAll(pathParams);
         parameters.putAll(queryParams);
@@ -173,6 +176,13 @@ public class SwaggerFactory {
         }
 
         return new ArrayList<>(parameters.values());
+    }
+
+    private boolean shouldInclude(ControllerMethod.Parameter parameter) {
+        var hidden = apiParam(parameter)
+            .map(ApiParam::hidden)
+            .orElse(false);
+        return !parameter.name().equals("request") && !hidden;
     }
 
     private Parameter parameter(ApiImplicitParam apiImplicitParam) {
@@ -192,39 +202,19 @@ public class SwaggerFactory {
 
     private Parameter pathParameter(ControllerMethod.Parameter parameter) {
         var result = new PathParameter();
-
-        var property = property(parameter);
-
-        result.setName(parameter.name());
-        result.setType(property.getType());
-        result.setFormat(property.getFormat());
-
+        map(result, parameter);
         return result;
     }
 
     private Parameter queryParameter(ControllerMethod.Parameter parameter) {
         var result = new QueryParameter();
-
-        var property = property(parameter);
-
-        result.setName(parameter.name());
-        result.setType(property.getType());
-        result.setFormat(property.getFormat());
-
+        map(result, parameter);
         return result;
     }
 
     private Parameter pathParameter(ApiImplicitParam apiImplicitParam) {
         var parameter = new PathParameter();
-
-        parameter.setAccess(apiImplicitParam.access());
-        parameter.setAllowEmptyValue(apiImplicitParam.allowEmptyValue());
-        parameter.setCollectionFormat(apiImplicitParam.collectionFormat());
-        parameter.setDefaultValue(apiImplicitParam.defaultValue());
-        parameter.setName(apiImplicitParam.name());
-        parameter.setDescription(apiImplicitParam.value());
-        parameter.required(apiImplicitParam.required());
-
+        map(parameter, apiImplicitParam);
         return parameter;
     }
 
@@ -242,34 +232,24 @@ public class SwaggerFactory {
 
     private Parameter headerParameter(ApiImplicitParam apiImplicitParam) {
         var parameter = new HeaderParameter();
-
-        parameter.setAccess(apiImplicitParam.access());
-        parameter.setAllowEmptyValue(apiImplicitParam.allowEmptyValue());
-        parameter.setCollectionFormat(apiImplicitParam.collectionFormat());
-        parameter.setDefaultValue(apiImplicitParam.defaultValue());
-        parameter.setName(apiImplicitParam.name());
-        parameter.setDescription(apiImplicitParam.value());
-        parameter.required(apiImplicitParam.required());
-
+        map(parameter, apiImplicitParam);
         return parameter;
     }
 
     private Parameter formParameter(ApiImplicitParam apiImplicitParam) {
         var parameter = new FormParameter();
-
-        parameter.setAccess(apiImplicitParam.access());
-        parameter.setAllowEmptyValue(apiImplicitParam.allowEmptyValue());
-        parameter.setCollectionFormat(apiImplicitParam.collectionFormat());
-        parameter.setDefaultValue(apiImplicitParam.defaultValue());
-        parameter.setName(apiImplicitParam.name());
-        parameter.setDescription(apiImplicitParam.value());
-        parameter.required(apiImplicitParam.required());
-
+        map(parameter, apiImplicitParam);
         return parameter;
     }
 
     private Parameter queryParameter(ApiImplicitParam apiImplicitParam) {
         var parameter = new QueryParameter();
+        map(parameter, apiImplicitParam);
+        return parameter;
+    }
+
+    private void map(AbstractSerializableParameter<?> parameter, ApiImplicitParam apiImplicitParam) {
+        var property = property(apiImplicitParam);
 
         parameter.setAccess(apiImplicitParam.access());
         parameter.setAllowEmptyValue(apiImplicitParam.allowEmptyValue());
@@ -277,11 +257,39 @@ public class SwaggerFactory {
         parameter.setDefaultValue(apiImplicitParam.defaultValue());
         parameter.setName(apiImplicitParam.name());
         parameter.setDescription(apiImplicitParam.value());
-        parameter.required(apiImplicitParam.required());
-
-        return parameter;
+        parameter.setRequired(apiImplicitParam.required());
+        parameter.setType(property.getType());
+        parameter.setFormat(property.getFormat());
     }
 
+    private void map(AbstractSerializableParameter<?> parameter, ControllerMethod.Parameter cmParameter) {
+        var apiParam = apiParam(cmParameter)
+            .orElse(null);
+        if (apiParam != null) {
+            parameter.setAccess(apiParam.access());
+            parameter.setAllowEmptyValue(apiParam.allowEmptyValue());
+            parameter.setCollectionFormat(apiParam.collectionFormat());
+            parameter.setDefaultValue(apiParam.defaultValue());
+            parameter.setName(apiParam.name());
+            parameter.setDescription(apiParam.value());
+            parameter.setRequired(apiParam.required());
+            parameter.setType(apiParam.type());
+            parameter.setFormat(apiParam.format());
+        } else {
+            var property = property(cmParameter);
+
+            parameter.setName(cmParameter.name());
+            parameter.setType(property.getType());
+            parameter.setFormat(property.getFormat());
+        }
+    }
+
+    private Optional<ApiParam> apiParam(ControllerMethod.Parameter parameter) {
+        return parameter.annotations().stream()
+            .filter(annotation -> annotation instanceof ApiParam)
+            .map(annotation -> (ApiParam) annotation)
+            .findAny();
+    }
 
     private Response response(ApiResponse apiResponse) {
         var response = new Response();
@@ -330,6 +338,14 @@ public class SwaggerFactory {
     private Property property(ControllerMethod.Parameter parameter) {
         try {
             return converter.resolveProperty(parameter.type(), new Annotation[]{});
+        } catch (Exception e) {
+            return new StringProperty();
+        }
+    }
+
+    private Property property(ApiImplicitParam apiImplicitParam) {
+        try {
+            return converter.resolveProperty(apiImplicitParam.dataTypeClass(), new Annotation[]{});
         } catch (Exception e) {
             return new StringProperty();
         }

@@ -1,5 +1,6 @@
 package io.funraise.swagger;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
@@ -7,10 +8,12 @@ import java.util.Objects;
 public final class ControllerMethod {
     public final static class Parameter {
         private final String name;
+        private final List<Annotation> annotations;
         private final Class<?> type;
 
-        public Parameter(String name, Class<?> type) {
+        public Parameter(String name, List<Annotation> annotations, Class<?> type) {
             this.name = name;
+            this.annotations = annotations;
             this.type = type;
         }
 
@@ -22,23 +25,33 @@ public final class ControllerMethod {
             return type;
         }
 
+        public List<Annotation> annotations() {
+            return annotations;
+        }
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             Parameter parameter = (Parameter) o;
-            return Objects.equals(name, parameter.name) && Objects.equals(type, parameter.type);
+            return Objects.equals(name, parameter.name) && Objects.equals(this.annotations,
+                parameter.annotations) && Objects.equals(type, parameter.type);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(name, type);
+            return Objects.hash(name, annotations, type);
         }
 
         @Override
         public String toString() {
             return "Parameter{" +
                 "name='" + name + '\'' +
+                ", annotations=" + annotations +
                 ", type=" + type +
                 '}';
         }
